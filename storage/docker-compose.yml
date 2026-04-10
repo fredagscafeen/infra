@@ -35,9 +35,8 @@ services:
 
       - traefik.http.routers.garage-webui.rule=Host(`garage.fredagscafeen.dk`)
       - traefik.http.routers.garage-webui.service=garage-webui
-      - traefik.http.routers.api.middlewares=auth
+      - traefik.http.routers.garage-webui.middlewares=auth
       - traefik.http.services.garage-webui.loadbalancer.server.port=3909
-      - traefik.http.middlewares.auth.basicauth.usersfile=/traefik-api-usersfile
     networks:
       - traefik
 
