@@ -3,6 +3,7 @@ services:
     container_name: garage
     image: dxflrs/garage:v2.2.0
     restart: always
+    env_file: ./garage/.env
     environment:
       - GARAGE_RPC_SECRET=${GARAGE_RPC_SECRET}
       - GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
@@ -35,7 +36,9 @@ services:
 
       - traefik.http.routers.garage-webui.rule=Host(`garage.fredagscafeen.dk`)
       - traefik.http.routers.garage-webui.service=garage-webui
+      - traefik.http.routers.api.middlewares=auth
       - traefik.http.services.garage-webui.loadbalancer.server.port=3909
+      - traefik.http.middlewares.auth.basicauth.usersfile=/traefik-api-usersfile
     networks:
       - traefik
 

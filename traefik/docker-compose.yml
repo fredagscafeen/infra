@@ -20,7 +20,7 @@ services:
       - ./traefik.yml:/etc/traefik/traefik.yml
       - ./traefik-dynamic.yml:/etc/traefik/traefik-dynamic.yml
       - ./acme.json:/acme.json
-      - ./usersfile:/traefik-api-usersfile
+      - ../usersfile:/traefik-api-usersfile
     networks:
       - traefik
 
