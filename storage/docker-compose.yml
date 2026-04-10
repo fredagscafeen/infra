@@ -15,7 +15,7 @@ services:
       - traefik.http.routers.garage-api.service=garage-api
       - traefik.http.services.garage-api.loadbalancer.server.port=3900
     volumes:
-      - ./garage.toml:/etc/garage.toml:ro
+      - ./garage/garage.toml:/etc/garage.toml:ro
       - garage_data:/var/lib/garage
     networks:
       - traefik
@@ -30,7 +30,7 @@ services:
       API_BASE_URL: "http://garage:3903"
       S3_ENDPOINT_URL: "http://garage:3900"
     volumes:
-      - ./garage.toml:/etc/garage.toml:ro
+      - ./garage/garage.toml:/etc/garage.toml:ro
     labels:
       - traefik.enable=true
 
