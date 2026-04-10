@@ -3,7 +3,7 @@
 all: traefik storage
 
 traefik:
-	cd traefik && docker compose up -d
+	cd traefik && docker compose up -d --env-file ../.env
 traefik-logs:
 	cd traefik && docker compose logs -f
 traefik-stop:
@@ -11,7 +11,7 @@ traefik-stop:
 traefik-restart: traefik-stop traefik
 
 storage:
-	cd storage && docker compose up -d
+	cd storage && docker compose up -d --env-file ../.env
 storage-logs:
 	cd storage && docker compose logs -f
 storage-stop:

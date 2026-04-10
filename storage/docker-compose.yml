@@ -3,7 +3,6 @@ services:
     container_name: garage
     image: dxflrs/garage:v2.2.0
     restart: always
-    env_file: ./garage/.env
     environment:
       - GARAGE_RPC_SECRET=${GARAGE_RPC_SECRET}
       - GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
