@@ -1,0 +1,30 @@
+# https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/
+
+replication_factor = 1
+consistency_mode = "consistent"
+metadata_dir = "/var/lib/garage/meta"
+data_dir = "/var/lib/garage/data"
+
+db_engine = "sqlite"
+
+disable_scrub = false
+
+rpc_bind_addr = "[::]:3901"
+
+[s3_api]
+s3_region = "fredagscafeen"
+api_bind_addr = "[::]:3900"
+root_domain = ".s3.fredagscafeen.dk"
+
+# [s3_web]
+# bind_addr = "[::]:3902"
+# root_domain = ".media.fredagscafeen.dk"
+# index = "index.html"
+# add_host_to_metrics = true
+
+# [k2v_api]
+# api_bind_addr = "[::]:3904"
+
+[admin]
+api_bind_addr = "[::]:3903"
+metrics_require_token = true
