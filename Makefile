@@ -1,4 +1,4 @@
-.PHONY: all traefik traefik-logs traefik-stop traefik-restart
+.PHONY: all traefik traefik-logs traefik-stop traefik-restart storage storage-logs storage-stop storage-restart
 
 all: traefik storage
 
