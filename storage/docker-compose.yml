@@ -10,8 +10,9 @@ services:
     labels:
       - traefik.enable=true
 
-      - traefik.http.routers.garage-api.rule=Host(`*.s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-api-wildcard.rule=Host(`*.s3.fredagscafeen.dk`)
       - traefik.http.routers.garage-api.rule=Host(`s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-api-wildcard.service=garage-api
       - traefik.http.routers.garage-api.service=garage-api
       - traefik.http.services.garage-api.loadbalancer.server.port=3900
     volumes:
