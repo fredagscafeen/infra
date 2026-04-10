@@ -32,4 +32,5 @@ certificatesResolvers:
     acme:
       email: best@fredagscafeen.dk
       storage: acme.json
-      tlsChallenge: {}
+      dnsChallenge:
+        provider: cloudflare
