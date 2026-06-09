@@ -3,3 +3,28 @@ tls:
     default:
       sniStrict: true
       minVersion: VersionTLS13
+
+http:
+  middlewares:
+    # This middleware intercepts requests and forwards them to Django
+    django-admin-auth:
+      forwardAuth:
+        address: "http://app:8000/auth/verify/"
+        trustForwardHeader: true
+        authRequestHeaders:
+          - "Cookie"
+          - "X-Forwarded-Host"
+          - "X-Forwarded-Uri"
+          - "X-Forwarded-Proto"
+        authResponseHeaders:
+          - "X-WEBAUTH-USER" # Injects username into Grafana if using Auth Proxy
+
+  routers:
+    # Protects the built-in Traefik API and Dashboard
+    traefik-dashboard:
+      rule: "Host(`traefik.fredagscafeen.dk`)"
+      entryPoints:
+        - "https"
+      service: "api@internal" # Connects to the built-in dashboard
+      middlewares:
+        - "django-admin-auth"

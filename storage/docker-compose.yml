@@ -24,8 +24,6 @@ services:
     image: khairul169/garage-webui:latest
     container_name: garage-webui
     restart: unless-stopped
-    ports:
-      - 3909:3909
     environment:
       API_ADMIN_KEY: ${GARAGE_ADMIN_TOKEN}
       API_BASE_URL: "http://garage:3903"
@@ -37,7 +35,8 @@ services:
 
       - traefik.http.routers.garage-webui.rule=Host(`garage.fredagscafeen.dk`)
       - traefik.http.routers.garage-webui.service=garage-webui
-      - traefik.http.routers.garage-webui.middlewares=auth
+      
+      - traefik.http.routers.garage-webui.middlewares=django-admin-auth@file
       - traefik.http.services.garage-webui.loadbalancer.server.port=3909
     networks:
       - traefik
