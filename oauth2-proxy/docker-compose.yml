@@ -1,0 +1,14 @@
+services:
+  oauth2-proxy:
+    container_name: oauth2-proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.3
+    restart: always
+    command: --config /oauth2-proxy.cfg
+    volumes:
+      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
