@@ -24,13 +24,13 @@ http:
         - "oauth2-proxy-auth"
       tls: {}
 
-services:
-  garage-api:
-    loadBalancer:
-      servers:
-        - url: "http://garage:3900"
+  services:
+    garage-api:
+      loadBalancer:
+        servers:
+          - url: "http://garage:3900"
 
-  garage-webui:
-    loadBalancer:
-      servers:
-        - url: "http://garage-webui:3909"
+    garage-webui:
+      loadBalancer:
+        servers:
+          - url: "http://garage-webui:3909"
