@@ -20,6 +20,7 @@ http:
         - "https"
       service: "garage-webui"
       middlewares:
+        - "oauth2-proxy-errors"
         - "oauth2-proxy-auth"
       tls: {}
 

@@ -12,6 +12,7 @@ http:
         - "https"
       service: "api@internal" # Connects to the built-in dashboard
       middlewares:
+        - "oauth2-proxy-errors"
         - "oauth2-proxy-auth"
       tls: {}
 
@@ -46,3 +47,11 @@ middlewares:
     forwardAuth:
       address: "https://oauth.fredagscafeen.dk/oauth2/auth"
       trustForwardHeader: true
+  oauth2-proxy-errors:
+    errors:
+      status:
+        - "401-403"
+      service: oauth2-proxy
+      query: "/oauth2/sign_in?rd={url}"
+      statusRewrites:
+        "401": 302
