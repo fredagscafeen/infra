@@ -1,0 +1,48 @@
+tls:
+  options:
+    default:
+      sniStrict: true
+      minVersion: VersionTLS13
+
+http:
+  routers:
+    traefik-dashboard:
+      rule: "Host(`traefik.fredagscafeen.dk`)"
+      entryPoints:
+        - "https"
+      service: "api@internal" # Connects to the built-in dashboard
+      middlewares:
+        - "oauth2-proxy-auth"
+      tls: {}
+
+    oauth2-proxy:
+      rule: "Host(`oauth.fredagscafeen.dk`) && PathPrefix(`/oauth2/`)"
+      entryPoints:
+        - "https"
+      service: "oauth2-proxy"
+      middlewares:
+        - "oauth2-proxy-auth-headers"
+      tls: {}
+
+services:
+  oauth2-proxy:
+    loadBalancer:
+      servers:
+        - url: "http://oauth2-proxy:4180"
+
+middlewares:
+  oauth2-proxy-auth-headers:
+    headers:
+      sslRedirect: true
+      stsSeconds: 315360000
+      browserXssFilter: true
+      contentTypeNosniff: true
+      forceSTSHeader: true
+      sslHost: fredagscafeen.dk
+      stsIncludeSubdomains: true
+      stsPreload: true
+      frameDeny: true
+  oauth2-proxy-auth:
+    forwardAuth:
+      address: "https://oauth.fredagscafeen.dk/oauth2/auth"
+      trustForwardHeader: true

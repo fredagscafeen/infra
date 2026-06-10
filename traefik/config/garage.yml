@@ -1,0 +1,35 @@
+http:
+  routers:
+    garage-s3-wildcard-api:
+      rule: "Host(`*.s3.fredagscafeen.dk`)"
+      entryPoints:
+        - "https"
+      service: "garage-api"
+      tls: {}
+
+    garage-s3-api:
+      rule: "Host(`s3.fredagscafeen.dk`)"
+      entryPoints:
+        - "https"
+      service: "garage-api"
+      tls: {}
+
+    garage-webui:
+      rule: "Host(`garage.fredagscafeen.dk`)"
+      entryPoints:
+        - "https"
+      service: "garage-webui"
+      middlewares:
+        - "oauth2-proxy-auth"
+      tls: {}
+
+services:
+  garage-api:
+    loadBalancer:
+      servers:
+        - url: "http://garage:3900"
+
+  garage-webui:
+    loadBalancer:
+      servers:
+        - url: "http://garage-webui:3909"
