@@ -29,10 +29,10 @@ entryPoints:
     address: ":443"
     http:
       tls:
-        certResolver: le
+        certResolver: lets-encrypt
 
 certificatesResolvers:
-  le:
+  lets-encrypt:
     acme:
       email: best@fredagscafeen.dk
       storage: acme.json

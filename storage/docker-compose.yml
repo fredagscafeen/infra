@@ -14,11 +14,13 @@ services:
       - traefik.http.routers.garage-s3-wildcard-api.entrypoints=https
       - traefik.http.routers.garage-s3-wildcard-api.service=garage-api
       - traefik.http.routers.garage-s3-wildcard-api.tls=true
+      - traefik.http.routers.garage-s3-wildcard-api.tls.certresolver=lets-encrypt
 
       - traefik.http.routers.garage-s3-api.rule=Host(`s3.fredagscafeen.dk`)
       - traefik.http.routers.garage-s3-api.entrypoints=https
       - traefik.http.routers.garage-s3-api.service=garage-api
       - traefik.http.routers.garage-s3-api.tls=true
+      - traefik.http.routers.garage-s3-api.tls.certresolver=lets-encrypt
 
       - traefik.http.services.garage-api.loadbalancer.server.port=3900
     volumes:
@@ -42,6 +44,7 @@ services:
       - traefik.http.routers.garage-webui.service=garage-webui
       - traefik.http.routers.garage-webui.middlewares=oauth2-proxy-auth
       - traefik.http.routers.garage-webui.tls=true
+      - traefik.http.routers.garage-webui.tls.certresolver=lets-encrypt
 
       - traefik.http.services.garage-webui.loadbalancer.server.port=3909
     volumes:

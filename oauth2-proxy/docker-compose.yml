@@ -12,6 +12,7 @@ services:
       - traefik.http.routers.oauth2-proxy.service=oauth2-proxy
       - traefik.http.routers.oauth2-proxy.middlewares=oauth2-proxy-auth-headers
       - traefik.http.routers.oauth2-proxy.tls=true
+      - traefik.http.routers.oauth2-proxy.tls.certresolver=lets-encrypt
 
       - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.sslRedirect=true
       - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.stsSeconds=315360000
