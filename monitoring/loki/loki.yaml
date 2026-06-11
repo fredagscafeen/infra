@@ -29,10 +29,11 @@ common:
     s3:
       bucket_names: loki-logs-bucket   # Your S3 bucket name
       endpoint: s3.fredagscafeen.dk       # Change if using MinIO, Wasabi, or a specific AWS region
-      region: fredagscafeen-1                # Your S3 region
+      region: us-east-1                # Your S3 region
       access_key_id: ${S3_SECRET_ACCESS_KEY}  # Use environment variables for security
       secret_access_key: ${S3_SECRET_ACCESS_KEY}
       insecure: false
+      s3_force_path_style: true # Set to true if using MinIO or S3-compatible storage that requires path-style access
   replication_factor: 1               
   ring:
     kvstore:

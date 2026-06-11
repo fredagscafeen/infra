@@ -11,15 +11,18 @@ common:
     backend: s3
     s3:
       endpoint: s3.fredagscafeen.dk
-      region: fredagscafeen-1
+      region: us-east-1
       secret_access_key: "${S3_SECRET_ACCESS_KEY}" # This is a secret injected via an environment variable
       access_key_id: "${S3_ACCESS_KEY_ID}"
+      insecure: false
+      s3_force_path_style: true # Set to true if using MinIO or S3
 
 # The block storage configuration determines where the metrics TSDB data is stored.
 blocks_storage:
   backend: s3
   s3:
     bucket_name: mimir-blocks
+    s3_force_path_style: true
     
   bucket_store:
     sync_dir: /tmp/mimir/tsdb-sync
@@ -60,6 +63,12 @@ ingester:
     # Note: It is highly recommended to run more than one ingester in production, the default is an RF of 3.
     replication_factor: 1
 
+alertmanager_storage:
+  backend: s3
+  s3:
+    bucket_name: mimir-rules          # Pointing to 'mimir-rules' so you don't have to create a brand new bucket
+    s3_force_path_style: true
+
 # The ruler storage block configures ruler storage settings.
 ruler_storage:
   # Use the local filesystem for block storage.
@@ -67,6 +76,7 @@ ruler_storage:
   backend: s3
   s3:
     bucket_name: mimir-rules
+    s3_force_path_style: true
 
 # The server block configures the Mimir server.
 server:
