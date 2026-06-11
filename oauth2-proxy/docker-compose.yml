@@ -1,0 +1,48 @@
+services:
+  oauth2-proxy:
+    container_name: oauth2-proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.3
+    restart: always
+    command: --config /oauth2-proxy.cfg
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.oauth2-proxy.rule=Host(`oauth.fredagscafeen.dk`) && PathPrefix(`/oauth2/`)
+      - traefik.http.routers.oauth2-proxy.entrypoints=https
+      - traefik.http.routers.oauth2-proxy.service=oauth2-proxy
+      - traefik.http.routers.oauth2-proxy.middlewares=oauth2-proxy-auth-headers
+      - traefik.http.routers.oauth2-proxy.tls=true
+      - traefik.http.routers.oauth2-proxy.tls.certresolver=lets-encrypt
+
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.sslRedirect=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.stsSeconds=315360000
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.browserXssFilter=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.forceSTSHeader=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.sslHost=fredagscafeen.dk
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.stsPreload=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.frameDeny=true
+
+      - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.address=http://oauth2-proxy:4180/
+      - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.trustForwardHeader=true
+      - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.authResponseHeaders=X-Auth-Request-User,X-Auth-Request-Email,X-Auth-Request-Groups,X-Auth-Request-Access-Token,Authorization
+      - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.authRequestHeaders=X-Forwarded-Method,X-Forwarded-Proto,X-Forwarded-Host,X-Forwarded-Uri,X-Forwarded-For,Cookie
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.status=401-403
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.service=oauth2-proxy
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.query=/oauth2/sign_in?rd={url}
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.statusRewrites.401=302
+
+      - traefik.http.services.oauth2-proxy.loadbalancer.server.port=4180
+    environment:
+      - OAUTH2_PROXY_CLIENT_ID=${OAUTH2_PROXY_CLIENT_ID}
+      - OAUTH2_PROXY_CLIENT_SECRET=${OAUTH2_PROXY_CLIENT_SECRET}
+      - OAUTH2_PROXY_COOKIE_SECRET=${OAUTH2_PROXY_COOKIE_SECRET}
+    volumes:
+      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

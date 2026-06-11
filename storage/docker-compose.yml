@@ -10,10 +10,19 @@ services:
     labels:
       - traefik.enable=true
 
-      - traefik.http.routers.garage-api-wildcard.rule=Host(`*.s3.fredagscafeen.dk`)
-      - traefik.http.routers.garage-api.rule=Host(`s3.fredagscafeen.dk`)
-      - traefik.http.routers.garage-api-wildcard.service=garage-api
-      - traefik.http.routers.garage-api.service=garage-api
+      - traefik.http.routers.garage-s3-wildcard-api.rule=HostRegexp(`{bucket:[a-zA-Z0-9-]+}.s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-s3-wildcard-api.entrypoints=https
+      - traefik.http.routers.garage-s3-wildcard-api.service=garage-api
+      - traefik.http.routers.garage-s3-wildcard-api.tls=true
+      - traefik.http.routers.garage-s3-wildcard-api.tls.certresolver=lets-encrypt
+      - traefik.http.routers.garage-s3-wildcard-api.tls.domains[0].main=*.s3.fredagscafeen.dk
+
+      - traefik.http.routers.garage-s3-api.rule=Host(`s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-s3-api.entrypoints=https
+      - traefik.http.routers.garage-s3-api.service=garage-api
+      - traefik.http.routers.garage-s3-api.tls=true
+      - traefik.http.routers.garage-s3-api.tls.certresolver=lets-encrypt
+
       - traefik.http.services.garage-api.loadbalancer.server.port=3900
     volumes:
       - ./garage/garage.toml:/etc/garage.toml:ro
@@ -24,21 +33,23 @@ services:
     image: khairul169/garage-webui:latest
     container_name: garage-webui
     restart: unless-stopped
-    ports:
-      - 3909:3909
     environment:
       API_ADMIN_KEY: ${GARAGE_ADMIN_TOKEN}
       API_BASE_URL: "http://garage:3903"
       S3_ENDPOINT_URL: "http://garage:3900"
-    volumes:
-      - ./garage/garage.toml:/etc/garage.toml:ro
     labels:
       - traefik.enable=true
 
       - traefik.http.routers.garage-webui.rule=Host(`garage.fredagscafeen.dk`)
+      - traefik.http.routers.garage-webui.entrypoints=https
       - traefik.http.routers.garage-webui.service=garage-webui
-      - traefik.http.routers.garage-webui.middlewares=auth
+      - traefik.http.routers.garage-webui.middlewares=oauth2-proxy-auth
+      - traefik.http.routers.garage-webui.tls=true
+      - traefik.http.routers.garage-webui.tls.certresolver=lets-encrypt
+
       - traefik.http.services.garage-webui.loadbalancer.server.port=3909
+    volumes:
+      - ./garage/garage.toml:/etc/garage.toml:ro
     networks:
       - traefik
 

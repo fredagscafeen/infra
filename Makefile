@@ -1,6 +1,6 @@
-.PHONY: all traefik traefik-logs traefik-config traefik-stop traefik-restart storage storage-logs storage-config storage-stop storage-restart
+.PHONY: all traefik traefik-logs traefik-config traefik-stop traefik-restart storage storage-logs storage-config storage-stop storage-restart oauth2-proxy oauth2-proxy-logs oauth2-proxy-config oauth2-proxy-stop oauth2-proxy-restart
 
-all: traefik storage
+all: traefik storage oauth2-proxy
 
 traefik:
 	cd traefik && docker compose --env-file ../.env up -d 
@@ -21,3 +21,13 @@ storage-config:
 storage-stop:
 	cd storage && docker compose down
 storage-restart: storage-stop storage
+
+oauth2-proxy:
+	cd oauth2-proxy && docker compose --env-file ../.env up -d
+oauth2-proxy-logs:
+	cd oauth2-proxy && docker compose logs -f
+oauth2-proxy-config:
+	cd oauth2-proxy && docker compose --env-file ../.env config
+oauth2-proxy-stop:
+	cd oauth2-proxy && docker compose down
+oauth2-proxy-restart: oauth2-proxy-stop oauth2-proxy
