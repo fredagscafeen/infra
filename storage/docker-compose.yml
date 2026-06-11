@@ -10,11 +10,12 @@ services:
     labels:
       - traefik.enable=true
 
-      - traefik.http.routers.garage-s3-wildcard-api.rule=Host(`.s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-s3-wildcard-api.rule=HostRegexp(`{bucket:[a-zA-Z0-9-]+}.s3.fredagscafeen.dk`)
       - traefik.http.routers.garage-s3-wildcard-api.entrypoints=https
       - traefik.http.routers.garage-s3-wildcard-api.service=garage-api
       - traefik.http.routers.garage-s3-wildcard-api.tls=true
       - traefik.http.routers.garage-s3-wildcard-api.tls.certresolver=lets-encrypt
+      - traefik.http.routers.garage-s3-wildcard-api.tls.domains[0].main=*.s3.fredagscafeen.dk
 
       - traefik.http.routers.garage-s3-api.rule=Host(`s3.fredagscafeen.dk`)
       - traefik.http.routers.garage-s3-api.entrypoints=https
