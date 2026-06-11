@@ -1,0 +1,112 @@
+services:
+  grafana:
+    image: grafana/grafana:13.0.2
+    container_name: grafana
+    restart: always
+    volumes:
+      - "./grafana/definitions:/var/lib/grafana/dashboards"
+      - "./grafana/provisioning:/etc/grafana/provisioning"
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.grafana.rule=Host(`grafana.fredagscafeen.dk`)
+      - traefik.http.routers.grafana.entrypoints=https
+      - traefik.http.routers.grafana.service=grafana
+      - traefik.http.routers.grafana.middlewares=oauth2-proxy-auth
+      - traefik.http.routers.grafana.tls=true
+      - traefik.http.routers.grafana.tls.certresolver=lets-encrypt
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    networks:
+      - traefik
+
+  alloy:
+    image: grafana/alloy:v1.16.3
+    container_name: alloy
+    restart: always
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data
+      - --server.http.listen-addr=0.0.0.0:12345
+    ports:
+      - "12345:12345"
+      - "12348:12348"
+      - "6832:6832"
+      - "55679:55679"
+      - "4317:4317"
+      - "4318:4318"
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.alloy.rule=Host(`alloy.fredagscafeen.dk`)
+      - traefik.http.routers.alloy.entrypoints=https
+      - traefik.http.routers.alloy.service=alloy
+      - traefik.http.routers.alloy.middlewares=oauth2-proxy-auth
+      - traefik.http.routers.alloy.tls=true
+      - traefik.http.routers.alloy.tls.certresolver=lets-encrypt
+      - traefik.http.services.alloy.loadbalancer.server.port=12345
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy
+      - alloy-data:/var/lib/alloy/data:rw # This keeps your traces safe!
+    networks:
+      - traefik
+  
+  loki:
+    image: grafana/loki:3.7.2
+    container_name: loki
+    restart: always
+    command: ["--pattern-ingester.enabled=true", "-config.file=/etc/loki/loki.yaml"]
+    environment:
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+    volumes:
+      - "./loki/loki.yaml:/etc/loki/loki.yaml"
+      - loki-data:/loki:rw # This keeps your logs safe!
+    networks:
+      - traefik
+
+  mimir:
+    image: grafana/mimir:3.1.0
+    container_name: mimir
+    restart: always
+    command: ["-ingester.native-histograms-ingestion-enabled=true", "-config.file=/etc/mimir.yaml"]
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.mimir.rule=Host(`mimir.fredagscafeen.dk`)
+      - traefik.http.routers.mimir.entrypoints=https
+      - traefik.http.routers.mimir.service=mimir
+      - traefik.http.routers.mimir.middlewares=oauth2-proxy-auth
+      - traefik.http.routers.mimir.tls=true
+      - traefik.http.routers.mimir.tls.certresolver=lets-encrypt
+      - traefik.http.services.mimir.loadbalancer.server.port=9009
+    environment:
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+    volumes:
+      - "./mimir/mimir.yaml:/etc/mimir.yaml"
+      - mimir-data:/tmp/mimir:rw # This keeps your metrics and alerts safe!
+    networks:
+      - traefik
+
+  service-discovery:
+    container_name: service-discovery
+    image: caddy:alpine
+    restart: always
+    volumes:
+      - ./service_discovery:/usr/share/caddy:ro
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  alloy-data:
+  loki-data:
+  mimir-data:

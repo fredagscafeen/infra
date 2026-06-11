@@ -1,0 +1,55 @@
+logging {
+  level  = "warn"
+  format = "logfmt"
+}
+
+livedebugging {
+  enabled = true
+}
+
+discovery.http "service_discovery" {
+  url = "http://service-discovery/targets.json"
+  refresh_interval = "60s"
+}
+
+discovery.docker "containers" {
+  refresh_interval = "60s"
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "container_names" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    replacement   = "$1"
+    target_label  = "container"
+  }
+}
+
+prometheus.scrape "datbar" {
+    scrape_interval = "10s"
+    scrape_timeout  = "10s"
+
+    targets    = discovery.http.service_discovery.targets
+    forward_to = [prometheus.remote_write.mimir.receiver]
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.container_names.output
+  forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+prometheus.remote_write "mimir" {
+  endpoint {
+    url = "http://mimir:9009/api/v1/push"
+  }
+}

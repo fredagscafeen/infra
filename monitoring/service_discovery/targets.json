@@ -1,0 +1,35 @@
+[
+  {
+    "labels": {
+      "group": "infrastructure",
+      "service": "monitoring",
+      "source": "system",
+      "component": "alloy"
+    },
+    "targets": [
+      "alloy:12345"
+    ]
+  },
+  {
+    "labels": {
+      "group": "infrastructure",
+      "service": "monitoring",
+      "source": "system",
+      "component": "mimir"
+    },
+    "targets": [
+      "mimir:9009"
+    ]
+  },
+  {
+    "labels": {
+      "group": "infrastructure",
+      "service": "monitoring",
+      "source": "system",
+      "component": "loki"
+    },
+    "targets": [
+      "loki:3100"
+    ]
+  }
+]
