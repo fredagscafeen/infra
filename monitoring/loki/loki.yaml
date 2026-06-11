@@ -31,6 +31,7 @@ common:
       bucketnames: loki-logs-bucket
       access_key_id: ${S3_SECRET_ACCESS_KEY}
       secret_access_key: ${S3_SECRET_ACCESS_KEY}
+      region: fredagscafeen-1
       s3forcepathstyle: true # Set to true if using MinIO or S3-compatible storage that requires path-style access
       insecure: false
   replication_factor: 1               
