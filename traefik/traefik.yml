@@ -1,6 +1,9 @@
 log:
   level: INFO
 
+accessLog:
+  filePath: "/dev/stdout" # Forces access logs to print directly to docker logs
+
 providers:
   docker:
     exposedByDefault: false

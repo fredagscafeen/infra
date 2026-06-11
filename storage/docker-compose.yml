@@ -7,6 +7,18 @@ services:
       - GARAGE_RPC_SECRET=${GARAGE_RPC_SECRET}
       - GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
       - GARAGE_METRICS_TOKEN=${GARAGE_METRICS_TOKEN}
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.garage-s3-wildcard-api.rule=Host(`*.s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-s3-wildcard-api.entrypoints=https
+      - traefik.http.routers.garage-s3-wildcard-api.service=garage-api
+      - traefik.http.routers.garage-s3-wildcard-api.tls=true
+
+      - traefik.http.routers.garage-s3-api.rule=Host(`s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-s3-api.entrypoints=https
+      - traefik.http.routers.garage-s3-api.service=garage-api
+      - traefik.http.routers.garage-s3-api.tls=true
     volumes:
       - ./garage/garage.toml:/etc/garage.toml:ro
       - garage_data:/var/lib/garage
@@ -20,6 +32,14 @@ services:
       API_ADMIN_KEY: ${GARAGE_ADMIN_TOKEN}
       API_BASE_URL: "http://garage:3903"
       S3_ENDPOINT_URL: "http://garage:3900"
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.garage-webui.rule=Host(`garage.fredagscafeen.dk`)
+      - traefik.http.routers.garage-webui.entrypoints=https
+      - traefik.http.routers.garage-webui.service=garage-webui
+      - traefik.http.routers.garage-webui.middlewares=oauth2-proxy-errors,oauth2-proxy-auth
+      - traefik.http.routers.garage-webui.tls=true
     volumes:
       - ./garage/garage.toml:/etc/garage.toml:ro
     networks:

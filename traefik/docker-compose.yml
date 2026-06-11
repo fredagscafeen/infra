@@ -8,6 +8,14 @@ services:
       - 443:443
     environment:
       - CLOUDFLARE_DNS_API_TOKEN=${TRAEFIK_CLOUDFLARE_DNS_API_TOKEN}
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.traefik-dashboard.rule=Host(`traefik.fredagscafeen.dk`)
+      - traefik.http.routers.traefik-dashboard.entrypoints=https
+      - traefik.http.routers.traefik-dashboard.service=api@internal
+      - traefik.http.routers.traefik-dashboard.middlewares=oauth2-proxy-errors,oauth2-proxy-auth
+      - traefik.http.routers.traefik-dashboard.tls=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml

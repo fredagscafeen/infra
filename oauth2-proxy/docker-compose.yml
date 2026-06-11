@@ -4,6 +4,32 @@ services:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.3
     restart: always
     command: --config /oauth2-proxy.cfg
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.oauth2-proxy.rule=Host(`oauth.fredagscafeen.dk`) && PathPrefix(`/oauth2/`)
+      - traefik.http.routers.oauth2-proxy.entrypoints=https
+      - traefik.http.routers.oauth2-proxy.service=oauth2-proxy
+      - traefik.http.routers.oauth2-proxy.middlewares=oauth2-proxy-auth-headers
+      - traefik.http.routers.oauth2-proxy.tls=true
+
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.sslRedirect=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.stsSeconds=315360000
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.browserXssFilter=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.forceSTSHeader=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.sslHost=fredagscafeen.dk
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.stsPreload=true
+      - traefik.http.middlewares.oauth2-proxy-auth-headers.headers.frameDeny=true
+
+      - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.address=https://oauth.fredagscafeen.dk/oauth2/auth
+      - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.trustForwardHeader=true
+
+      - traefik.http.middlewares.oauth2-proxy-errors.errors.status=401-403
+      - traefik.http.middlewares.oauth2-proxy-errors.errors.service=oauth2-proxy
+      - traefik.http.middlewares.oauth2-proxy-errors.errors.query=/oauth2/sign_in?rd={url}
+      - traefik.http.middlewares.oauth2-proxy-errors.errors.statusRewrites.401=302
     volumes:
       - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
     networks:
