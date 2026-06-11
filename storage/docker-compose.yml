@@ -10,7 +10,7 @@ services:
     labels:
       - traefik.enable=true
 
-      - traefik.http.routers.garage-s3-wildcard-api.rule=Host(`{subdomain:[a-z0-9-]+}.s3.fredagscafeen.dk`)
+      - traefik.http.routers.garage-s3-wildcard-api.rule=Host(`.s3.fredagscafeen.dk`)
       - traefik.http.routers.garage-s3-wildcard-api.entrypoints=https
       - traefik.http.routers.garage-s3-wildcard-api.service=garage-api
       - traefik.http.routers.garage-s3-wildcard-api.tls=true
