@@ -30,6 +30,8 @@ services:
       - traefik.http.middlewares.oauth2-proxy-errors.errors.service=oauth2-proxy
       - traefik.http.middlewares.oauth2-proxy-errors.errors.query=/oauth2/sign_in?rd={url}
       - traefik.http.middlewares.oauth2-proxy-errors.errors.statusRewrites.401=302
+
+      - traefik.http.services.oauth2-proxy.loadbalancer.server.port=4180
     volumes:
       - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
     networks:
