@@ -12,7 +12,6 @@ http:
         - "https"
       service: "api@internal" # Connects to the built-in dashboard
       middlewares:
-        - "oauth2-proxy-errors"
         - "oauth2-proxy-auth"
       tls: {}
 
