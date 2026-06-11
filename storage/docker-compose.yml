@@ -40,7 +40,7 @@ services:
       - traefik.http.routers.garage-webui.rule=Host(`garage.fredagscafeen.dk`)
       - traefik.http.routers.garage-webui.entrypoints=https
       - traefik.http.routers.garage-webui.service=garage-webui
-      - traefik.http.routers.garage-webui.middlewares=oauth2-proxy-auth
+      - traefik.http.routers.garage-webui.middlewares=oauth2-proxy-errors,oauth2-proxy-auth
       - traefik.http.routers.garage-webui.tls=true
 
       - traefik.http.services.garage-webui.loadbalancer.server.port=3909
