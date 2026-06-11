@@ -26,10 +26,10 @@ services:
       - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.address=https://oauth.fredagscafeen.dk/oauth2/auth
       - traefik.http.middlewares.oauth2-proxy-auth.forwardAuth.trustForwardHeader=true
 
-      - traefik.http.middlewares.oauth2-proxy-errors.errors.status=401-403
-      - traefik.http.middlewares.oauth2-proxy-errors.errors.service=oauth2-proxy
-      - traefik.http.middlewares.oauth2-proxy-errors.errors.query=/oauth2/sign_in?rd={url}
-      - traefik.http.middlewares.oauth2-proxy-errors.errors.statusRewrites.401=302
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.status=401-403
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.service=oauth2-proxy
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.query=/oauth2/sign_in?rd={url}
+      # - traefik.http.middlewares.oauth2-proxy-errors.errors.statusRewrites.401=302
 
       - traefik.http.services.oauth2-proxy.loadbalancer.server.port=4180
     volumes:
