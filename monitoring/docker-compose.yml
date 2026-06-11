@@ -50,6 +50,7 @@ services:
       - traefik.http.routers.alloy.tls.certresolver=lets-encrypt
       - traefik.http.services.alloy.loadbalancer.server.port=12345
     volumes:
+      - var/run/docker.sock:/var/run/docker.sock
       - ./alloy/config.alloy:/etc/alloy/config.alloy
       - alloy-data:/var/lib/alloy/data:rw # This keeps your traces safe!
     networks:
@@ -59,7 +60,7 @@ services:
     image: grafana/loki:3.7.2
     container_name: loki
     restart: always
-    command: ["--pattern-ingester.enabled=true", "-config.file=/etc/loki/loki.yaml"]
+    command: ["--pattern-ingester.enabled=true", "-config.file=/etc/loki/loki.yaml", "-config.expand-env=true"]
     environment:
       - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
       - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
@@ -73,7 +74,7 @@ services:
     image: grafana/mimir:3.1.0
     container_name: mimir
     restart: always
-    command: ["-ingester.native-histograms-ingestion-enabled=true", "-config.file=/etc/mimir.yaml"]
+    command: ["-ingester.native-histograms-ingestion-enabled=true", "-config.file=/etc/mimir.yaml", "-config.expand-env=true"]
     labels:
       - traefik.enable=true
 
