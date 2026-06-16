@@ -61,8 +61,8 @@ services:
     restart: always
     command: ["--pattern-ingester.enabled=true", "-config.file=/etc/loki/loki.yaml", "-config.expand-env=true"]
     environment:
-      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
       - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
     volumes:
       - "./loki/loki.yaml:/etc/loki/loki.yaml"
       - loki-data:/loki:rw # This keeps your logs safe!
@@ -85,8 +85,8 @@ services:
       - traefik.http.routers.mimir.tls.certresolver=lets-encrypt
       - traefik.http.services.mimir.loadbalancer.server.port=9009
     environment:
-      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
       - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
     volumes:
       - "./mimir/mimir.yaml:/etc/mimir.yaml"
       - mimir-data:/tmp/mimir:rw # This keeps your metrics and alerts safe!
