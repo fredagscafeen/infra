@@ -19,6 +19,7 @@ services:
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ORG_NAME=Fredagscafeen
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     networks:
       - traefik
