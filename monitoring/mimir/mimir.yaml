@@ -1,34 +1,36 @@
 # For more information on this configuration, see the complete reference guide at
 # https://grafana.com/docs/mimir/latest/references/configuration-parameters/
 
+multitenancy_enabled: false
+
 target: all,alertmanager
 
-# Disable multi-tenancy and restrict to single tenant.
-multitenancy_enabled: false
+server:
+  http_listen_port: 9009
+  log_level: info
 
 common:
   storage:
     backend: s3
     s3:
-      endpoint: s3.fredagscafeen.dk
-      region: us-east-1
-      secret_access_key: "${S3_SECRET_ACCESS_KEY}" # This is a secret injected via an environment variable
-      access_key_id: "${S3_ACCESS_KEY_ID}"
-      insecure: false
-      s3_force_path_style: true # Set to true if using MinIO or S3
+      endpoint: https://s3.fredagscafeen.dk
+      region: fredagscafeen
+      access_key_id: ${S3_ACCESS_KEY_ID}
+      secret_access_key: ${S3_SECRET_ACCESS_KEY} # This is a secret injected via an environment variable
+      s3forcepathstyle: true # Set to true if using MinIO or S3-compatible storage that requires path-style access
 
 # The block storage configuration determines where the metrics TSDB data is stored.
 blocks_storage:
-  backend: s3
   s3:
     bucket_name: mimir-blocks
-    s3_force_path_style: true
-    
-  bucket_store:
-    sync_dir: /tmp/mimir/tsdb-sync
 
-  tsdb:
-    dir: /tmp/mimir/tsdb
+alertmanager_storage:
+  s3:
+    bucket_name: mimir-alertmanager
+
+ruler_storage:
+  s3:
+    bucket_name: mimir-ruler
 
 # The compactor block configures the compactor responsible for compacting TSDB blocks.
 compactor:
@@ -63,28 +65,6 @@ ingester:
     # Note: It is highly recommended to run more than one ingester in production, the default is an RF of 3.
     replication_factor: 1
 
-alertmanager_storage:
-  backend: s3
-  s3:
-    bucket_name: mimir-rules          # Pointing to 'mimir-rules' so you don't have to create a brand new bucket
-    s3_force_path_style: true
-
-# The ruler storage block configures ruler storage settings.
-ruler_storage:
-  # Use the local filesystem for block storage.
-  # Note: It is highly recommended not to use local filesystem for production data.
-  backend: s3
-  s3:
-    bucket_name: mimir-rules
-    s3_force_path_style: true
-
-# The server block configures the Mimir server.
-server:
-  # Listen on port 9009 for all incoming requests.
-  http_listen_port: 9009
-  # Log messages at info level.
-  log_level: info
-
 # The store gateway block configures gateway storage.
 store_gateway:
   # Configuration for the hash ring.
@@ -95,8 +75,6 @@ store_gateway:
 
 # Global limits configuration.
 limits:
-  # A maximum of 100000 exemplars in memory at any one time.
-  # This setting enables exemplar processing and storage.
   max_global_exemplars_per_user: 100000
   ingestion_rate: 30000
   ingestion_burst_size: 60000
