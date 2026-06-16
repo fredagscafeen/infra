@@ -29,7 +29,7 @@ limits_config:
   max_line_size: 256kb
 
 storage_config:
-  tsdb:
+  tsdb_shipper:
     active_index_directory: /loki/index
     cache_location: /loki/index_cache
     cache_ttl: 24h # Can be increased for faster performance over longer query periods, uses more disk space
