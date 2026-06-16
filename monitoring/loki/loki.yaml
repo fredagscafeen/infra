@@ -29,10 +29,14 @@ limits_config:
   max_line_size: 256kb
 
 storage_config:
+  tsdb:
+    active_index_directory: /loki/index
+    cache_location: /loki/index_cache
+    cache_ttl: 24h # Can be increased for faster performance over longer query periods, uses more disk space
   aws:
     endpoint: https://s3.fredagscafeen.dk
     bucketnames: loki-logs-bucket
-    region: fredagscafeen-1
+    region: fredagscafeen
     access_key_id: ${S3_SECRET_ACCESS_KEY}
     secret_access_key: ${S3_SECRET_ACCESS_KEY}
     insecure: false
