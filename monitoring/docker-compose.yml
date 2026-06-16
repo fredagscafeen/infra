@@ -52,6 +52,7 @@ services:
       - traefik.http.routers.alloy.tls.certresolver=lets-encrypt
       - traefik.http.services.alloy.loadbalancer.server.port=12345
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # For docker container discovery
       - ./alloy/config.alloy:/etc/alloy/config.alloy
       - alloy-data:/var/lib/alloy/data:rw
     networks:
